@@ -24,6 +24,7 @@
       <table style="margin: 0px; width: 0%">
         <thead>
           <tr>
+            <th>Keyword of Job id</th>
             <th>Processor Name</th>
             <th>Is Executed</th>
             <th>Is Destroyed</th>
@@ -32,6 +33,18 @@
         </thead>
         <tbody>
           <tr>
+            <td>
+              <div style="display: flex">
+                <input id="idKeyword" />
+                <button
+                  type="button"
+                  class="btn btn-primary"
+                  onclick="filterByIdKeyword()"
+                >
+                  Search
+                </button>
+              </div>
+            </td>
             <td>
               <div class="dropdown">
                 <button

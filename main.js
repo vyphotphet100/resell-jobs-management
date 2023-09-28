@@ -1,5 +1,5 @@
-const baseUrl = `https://dev-api.resellticket.co.kr/api/v1`;
-// const baseUrl = `http://localhost:3000/api/v1`;
+// const baseUrl = `https://dev-api.resellticket.co.kr/api/v1`;
+const baseUrl = `http://localhost:3000/api/v1`;
 const urlSearchParams = new URLSearchParams(window.location.search);
 const params = Object.fromEntries(urlSearchParams.entries());
 let limit = Number(params.limit);
@@ -8,6 +8,7 @@ let processorName = params.processorName;
 let isExecuted = params.isExecuted;
 let isDestroyed = params.isDestroyed;
 let keyword = params.keyword;
+let idKeyword = params.idKeyword;
 
 initState();
 getJobs();
@@ -27,6 +28,10 @@ function initState() {
 
   if (keyword) {
     $("#keyword").val(keyword);
+  }
+
+  if (idKeyword) {
+    $("#idKeyword").val(idKeyword);
   }
 }
 
@@ -56,6 +61,10 @@ function getJobs() {
 
   if (keyword && keyword !== "") {
     url.searchParams.append("keyword", keyword);
+  }
+
+  if (idKeyword && idKeyword !== "") {
+    url.searchParams.append("idKeyword", idKeyword);
   }
 
   const result = $.ajax({
@@ -349,5 +358,21 @@ function filterByKeyword() {
 
   url.searchParams.delete("keyword");
   url.searchParams.append("keyword", inputKeyword);
+  window.location.href = url.href;
+}
+
+function filterByIdKeyword() {
+  const currentURL = window.location.href;
+  const url = new URL(currentURL);
+  const inputKeyword = $("#idKeyword").val();
+
+  if (!inputKeyword || inputKeyword == "") {
+    url.searchParams.delete("idKeyword");
+    window.location.href = url.href;
+    return;
+  }
+
+  url.searchParams.delete("idKeyword");
+  url.searchParams.append("idKeyword", inputKeyword);
   window.location.href = url.href;
 }
