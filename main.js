@@ -157,23 +157,25 @@ function prev() {
     return;
   }
 
+  const currentURL = window.location.href;
+  const url = new URL(currentURL);
   offset -= limit;
-  window.location.href =
-    window.location.protocol +
-    "//" +
-    window.location.host +
-    window.location.pathname +
-    `?limit=${limit}&offset=${offset}`;
+
+  url.searchParams.delete("offset");
+  url.searchParams.append("offset", offset);
+
+  window.location.href = url.href;
 }
 
 function next() {
+  const currentURL = window.location.href;
+  const url = new URL(currentURL);
   offset += limit;
-  window.location.href =
-    window.location.protocol +
-    "//" +
-    window.location.host +
-    window.location.pathname +
-    `?limit=${limit}&offset=${offset}`;
+
+  url.searchParams.delete("offset");
+  url.searchParams.append("offset", offset);
+
+  window.location.href = url.href;
 }
 
 // Action functions
