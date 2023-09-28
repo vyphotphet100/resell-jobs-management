@@ -1,38 +1,54 @@
+body {
+  padding: 20px;
+  transform: scale(0.8); /* Adjust the scale value as needed */
+  transform-origin: top left;
+  width: 124%;
+}
+
 /* Apply styles to the table */
 table {
-    width: 80%;
-    border-collapse: collapse;
-    margin: 20px auto;
+  width: 80%;
+  border-collapse: collapse;
+  margin: 20px auto;
 }
 
 /* Style table headers */
 th {
-    background-color: #f2f2f2;
-    text-align: left;
-    padding: 8px;
-    border: solid 1px;
+  background-color: #f2f2f2;
+  text-align: left;
+  padding: 8px;
+  border: solid 1px;
 }
 
 /* Style table data cells */
 td {
-    padding: 8px;
-    border-bottom: 1px solid #ddd;
-    border: solid 1px #d1cbcb;
+  padding: 8px;
+  border-bottom: 1px solid #ddd;
+  border: solid 1px #d1cbcb;
 }
 
 /* Add some hover effect to table rows */
 tr:hover {
-    background-color: #f5f5f5;
+  background-color: #f5f5f5;
 }
 
 /* Style the table header row */
 thead tr {
-    background-color: #333;
-    color: #0f0f0f;
+  background-color: #333;
+  color: #0f0f0f;
 }
 
 /* Style the table header cells */
 thead th {
-    padding: 10px;
-    text-align: center;
+  padding: 10px;
+  text-align: center;
+}
+
+.btn {
+  margin: 3px !important;
+}
+
+li {
+  padding: 10px;
+  cursor: pointer;
 }
