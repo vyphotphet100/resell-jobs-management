@@ -1,5 +1,5 @@
-// const baseUrl = `https://dev-api.resellticket.co.kr/api/v1`;
-const baseUrl = `http://localhost:3000/api/v1`;
+const baseUrl = `https://dev-api.resellticket.co.kr/api/v1`;
+// const baseUrl = `http://localhost:3000/api/v1`;
 const urlSearchParams = new URLSearchParams(window.location.search);
 const params = Object.fromEntries(urlSearchParams.entries());
 let limit = Number(params.limit);
