@@ -1,5 +1,5 @@
-const baseUrl = `https://dev-api.resellticket.co.kr/api/v1`;
-// const baseUrl = `http://localhost:3000/api/v1`;
+// const baseUrl = `https://dev-api.resellticket.co.kr/api/v1`;
+const baseUrl = `http://localhost:3000/api/v1`;
 const urlSearchParams = new URLSearchParams(window.location.search);
 const params = Object.fromEntries(urlSearchParams.entries());
 let limit = Number(params.limit);
@@ -189,6 +189,10 @@ function next() {
 
 // Action functions
 function reExecuteJob(processorName, jobId) {
+  if (!confirm("Are you sure?")) {
+    return;
+  }
+
   const url = `${baseUrl}/jobs/execute/${processorName}/${jobId}?reExecute=true`;
 
   const result = $.ajax({
@@ -211,6 +215,10 @@ function reExecuteJob(processorName, jobId) {
 }
 
 function executeJob(processorName, jobId) {
+  if (!confirm("Are you sure?")) {
+    return;
+  }
+
   const url = `${baseUrl}/jobs/execute/${processorName}/${jobId}`;
 
   const result = $.ajax({
@@ -233,6 +241,10 @@ function executeJob(processorName, jobId) {
 }
 
 function removeJob(processorName, jobId) {
+  if (!confirm("Are you sure?")) {
+    return;
+  }
+
   const url = `${baseUrl}/jobs/delete/${processorName}/${jobId}`;
 
   const result = $.ajax({
@@ -255,6 +267,10 @@ function removeJob(processorName, jobId) {
 }
 
 function destroyJob(processorName, jobId) {
+  if (!confirm("Are you sure?")) {
+    return;
+  }
+
   const url = `${baseUrl}/jobs/destroy/${processorName}/${jobId}`;
 
   const result = $.ajax({
@@ -277,6 +293,10 @@ function destroyJob(processorName, jobId) {
 }
 
 function syncJobs() {
+  if (!confirm("Are you sure?")) {
+    return;
+  }
+
   const url = `${baseUrl}/jobs/sync-job`;
 
   const result = $.ajax({
@@ -298,6 +318,7 @@ function syncJobs() {
   window.location.reload();
 }
 
+// Filter
 function filterByProcessName(processorName) {
   const currentURL = window.location.href;
   const url = new URL(currentURL);
@@ -358,21 +379,5 @@ function filterByKeyword() {
 
   url.searchParams.delete("keyword");
   url.searchParams.append("keyword", inputKeyword);
-  window.location.href = url.href;
-}
-
-function filterByIdKeyword() {
-  const currentURL = window.location.href;
-  const url = new URL(currentURL);
-  const inputKeyword = $("#idKeyword").val();
-
-  if (!inputKeyword || inputKeyword == "") {
-    url.searchParams.delete("idKeyword");
-    window.location.href = url.href;
-    return;
-  }
-
-  url.searchParams.delete("idKeyword");
-  url.searchParams.append("idKeyword", inputKeyword);
   window.location.href = url.href;
 }
