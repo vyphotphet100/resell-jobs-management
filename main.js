@@ -117,7 +117,7 @@ function getJobs() {
     record = replaceValueToString("IS_DESTROYED", job.isDestroyed, record);
     record = replaceValueToString("LOGS", job.logs ?? "Success!", record);
 
-    if (new Date(job.executeTime) > new Date()) {
+    if (!job.isExecuted) {
       record = replaceValueToString(
         "IS_RE-EXECUTE_BUTTON_SHOWN",
         'style="display:none"',
