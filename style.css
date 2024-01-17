@@ -7,7 +7,7 @@ body {
 
 /* Apply styles to the table */
 table {
-  width: 80%;
+  width: 90%;
   border-collapse: collapse;
   margin: 20px auto;
 }
@@ -51,4 +51,49 @@ thead th {
 li {
   padding: 10px;
   cursor: pointer;
+}
+
+pre {
+  background-color: #f4f4f4;
+  padding: 10px;
+  border: 1px solid #ddd;
+  white-space: pre-wrap; /* Preserve line breaks */
+}
+
+.btn.btn-primary.dropdown-toggle {
+  width: 100%;
+}
+
+#keyword { 
+  width: 100%;
+  margin-left: 10px;
+  margin-right: 10px;
+}
+
+#search-btn-div{
+  display: flex;
+  justify-content: flex-end;
+  width: 90%;
+  margin: 0px auto;
+}
+
+#title-text-span {
+  font-size: 20px;
+  display: flex;
+  width: 90%;
+  margin: 0px auto;
+}
+
+#host-info-table{
+  width: 30%;
+  border-collapse: collapse;
+  margin: 0px ;  
+}
+
+#hostname {
+  width: 100%;
+}
+
+#root-password {
+  width: 100%;
 }

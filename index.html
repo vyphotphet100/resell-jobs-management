@@ -7,207 +7,186 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css"
     integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous" />
   <link rel="stylesheet" type="text/css" href="style.css" />
-  <title>Job managements</title>
+  <title>Bull Queue Job management</title>
 </head>
 
 <body>
-  <h1>Jobs management</h1>
-  <div>
-    <button type="button" class="btn btn-success" onclick="syncJobs()">
-      Sync Jobs
-    </button>
-    <br />
-    <br />
-    <h5>Filters:</h5>
-    <table style="margin: 0px; width: 0%">
-      <thead>
-        <tr>
-          <th>Processor Name</th>
-          <th>Is Executed</th>
-          <th>Is Destroyed</th>
-          <th>Job Id & Job name & Data & Logs</th>
-        </tr>
-      </thead>
+  <h1>Bull Queue Job management</h1>
+  <div id="host-info-div">
+    <span style="font-size: 20px;"><strong>Host</strong></span>
+    <table id="host-info-table">
       <tbody>
         <tr>
-          <td>
-            <div class="dropdown">
-              <button id="processorNameDropdown" class="btn btn-primary dropdown-toggle" type="button"
-                data-toggle="dropdown">
-                All <span class="caret"></span>
-              </button>
-              <ul class="dropdown-menu">
-                <li onclick="filterByProcessName()">All</li>
-                <li onclick="filterByProcessName('check-expired-event')">
-                  check-expired-event
-                </li>
-                <li onclick="filterByProcessName('check-order-status')">
-                  check-order-status
-                </li>
-                <li onclick="filterByProcessName('hold-ticket')">
-                  hold-ticket
-                </li>
-                <li onclick="filterByProcessName('update-order-transaction-completed-everyday')">
-                  update-order-transaction-completed-everyday
-                </li>
-                <li onclick="filterByProcessName('check-order-for-punishment')">
-                  check-order-for-punishment
-                </li>
-                <li onclick="filterByProcessName('check-user-active')">
-                  check-user-active
-                </li>
-                <li onclick="filterByProcessName('check-inside-ticket-auction-end-time')">
-                  check-inside-ticket-auction-end-time
-                </li>
-                <li onclick="filterByProcessName('check-buyer-purchased-won-bid-ticket')">
-                  check-buyer-purchased-won-bid-ticket
-                </li>
-              </ul>
-            </div>
+          <td>Hostname
           </td>
           <td>
-            <div class="dropdown">
-              <button id="isExecuteDropdown" class="btn btn-primary dropdown-toggle" type="button"
-                data-toggle="dropdown">
-                All <span class="caret"></span>
-              </button>
-              <ul class="dropdown-menu">
-                <li onclick="filterByIsExecuted()">All</li>
-                <li onclick="filterByIsExecuted(true)">True</li>
-                <li onclick="filterByIsExecuted(false)">False</li>
-              </ul>
-            </div>
+            <input id="hostname" />
+          </td>
+        </tr>
+        <tr>
+          <td>Root password
           </td>
           <td>
-            <div class="dropdown">
-              <button id="isDestroyedDropdown" class="btn btn-primary dropdown-toggle" type="button"
-                data-toggle="dropdown">
-                All <span class="caret"></span>
-              </button>
-              <ul class="dropdown-menu">
-                <li onclick="filterByIsDestroyed()">All</li>
-                <li onclick="filterByIsDestroyed(true)">True</li>
-                <li onclick="filterByIsDestroyed(false)">False</li>
-              </ul>
-            </div>
-          </td>
-          <td>
-            <div style="display: flex">
-              <input id="keyword" />
-              <button type="button" class="btn btn-primary" onclick="filterByKeyword()">
-                Search
-              </button>
-            </div>
+            <input id="root-password" type="password" />
           </td>
         </tr>
       </tbody>
     </table>
-    <!-- <div style="display: flex">
-        <label>Processor Name: </label>
-        <div class="dropdown">
-          <button
-            id="processorNameDropdown"
-            class="btn btn-primary dropdown-toggle"
-            type="button"
-            data-toggle="dropdown"
-          >
-            Processor Name <span class="caret"></span>
-          </button>
-          <ul class="dropdown-menu">
-            <li onclick="filterByProcessName()">All</li>
-            <li onclick="filterByProcessName('check-expired-event')">
-              check-expired-event
-            </li>
-            <li onclick="filterByProcessName('check-order-status')">
-              check-order-status
-            </li>
-            <li onclick="filterByProcessName('hold-ticket')">hold-ticket</li>
-            <li onclick="filterByProcessName('update-order-transaction')">
-              update-order-transaction
-            </li>
-            <li onclick="filterByProcessName('check-order-for-punishment')">
-              check-order-for-punishment
-            </li>
-          </ul>
-        </div>
-        <div class="dropdown">
-          <button
-            id="isExecuteDropdown"
-            class="btn btn-primary dropdown-toggle"
-            type="button"
-            data-toggle="dropdown"
-          >
-            Is Executed <span class="caret"></span>
-          </button>
-          <ul class="dropdown-menu">
-            <li onclick="filterByIsExecuted()">All</li>
-            <li onclick="filterByIsExecuted(true)">True</li>
-            <li onclick="filterByIsExecuted(false)">False</li>
-          </ul>
-        </div>
-        <div class="dropdown">
-          <button
-            id="isDestroyedDropdown"
-            class="btn btn-primary dropdown-toggle"
-            type="button"
-            data-toggle="dropdown"
-          >
-            Is Destroyed <span class="caret"></span>
-          </button>
-          <ul class="dropdown-menu">
-            <li onclick="filterByIsDestroyed()">All</li>
-            <li onclick="filterByIsDestroyed(true)">True</li>
-            <li onclick="filterByIsDestroyed(false)">False</li>
-          </ul>
-        </div>
-      </div> -->
+    <div>
+      <button type="button" class="btn btn-primary" onclick="connectToHost()">
+        Connect
+      </button>
+    </div>
   </div>
-  <br />
-  <table>
-    <thead>
-      <tr>
-        <th>Job Id</th>
-        <th>Created At</th>
-        <th>Updated At</th>
-        <th>Processor name</th>
-        <th>Job name</th>
-        <th>Execute time</th>
-        <th>Data</th>
-        <th>Is executed</th>
-        <th>Is destroyed</th>
-        <th>Logs</th>
-        <th>Action</th>
-      </tr>
-    </thead>
-    <tbody id="table-body">
-      <tr>
-        <td>...</td>
-        <td>...</td>
-        <td>...</td>
-        <td>...</td>
-        <td>...</td>
-        <td>...</td>
-        <td>...</td>
-        <td>...</td>
-        <td>...</td>
-        <td>...</td>
-        <td>
-          <button>...</button>
-        </td>
-      </tr>
-    </tbody>
-  </table>
+  <div id="content-div">
+    <h4>Hostname: <span id="hostname-title"></span></h4>
+    <button type="button" class="btn btn-primary" onclick="disconnect()">
+      Disconnect
+    </button>
+    <br />
+    <br />
+    <div>
+      <!-- <button type="button" class="btn btn-success" onclick="syncJobs()">
+        Sync Jobs
+      </button>
+      <br />
+      <br /> -->
+      <span id="title-text-span"><strong>Filters</strong></span>
+      <table>
+        <thead>
+          <tr>
+            <th>Processor Name</th>
+            <th>Is Executed</th>
+            <th>Is Destroyed</th>
+            <th>Job Id & Job name & Data & Logs</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>
+              <div class="dropdown">
+                <button id="processorNameDropdown" class="btn btn-primary dropdown-toggle" type="button"
+                  data-toggle="dropdown">
+                  All <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu" id="queue-processor-name">
+                  <li onclick="filterByProcessName()">All</li>
+                  <li onclick="filterByProcessName('check-expired-event')">
+                    check-expired-event
+                  </li>
+                  <li onclick="filterByProcessName('check-order-status')">
+                    check-order-status
+                  </li>
+                  <li onclick="filterByProcessName('hold-ticket')">
+                    hold-ticket
+                  </li>
+                  <li onclick="filterByProcessName('update-order-transaction-completed-everyday')">
+                    update-order-transaction-completed-everyday
+                  </li>
+                  <li onclick="filterByProcessName('check-order-for-punishment')">
+                    check-order-for-punishment
+                  </li>
+                  <li onclick="filterByProcessName('check-user-active')">
+                    check-user-active
+                  </li>
+                  <li onclick="filterByProcessName('check-inside-ticket-auction-end-time')">
+                    check-inside-ticket-auction-end-time
+                  </li>
+                  <li onclick="filterByProcessName('check-buyer-purchased-won-bid-ticket')">
+                    check-buyer-purchased-won-bid-ticket
+                  </li>
+                </ul>
+              </div>
+            </td>
+            <td>
+              <div class="dropdown">
+                <button id="isExecuteDropdown" class="btn btn-primary dropdown-toggle" type="button"
+                  data-toggle="dropdown">
+                  All <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu">
+                  <li onclick="filterByIsExecuted()">All</li>
+                  <li onclick="filterByIsExecuted(true)">True</li>
+                  <li onclick="filterByIsExecuted(false)">False</li>
+                </ul>
+              </div>
+            </td>
+            <td>
+              <div class="dropdown">
+                <button id="isDestroyedDropdown" class="btn btn-primary dropdown-toggle" type="button"
+                  data-toggle="dropdown">
+                  All <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu">
+                  <li onclick="filterByIsDestroyed()">All</li>
+                  <li onclick="filterByIsDestroyed(true)">True</li>
+                  <li onclick="filterByIsDestroyed(false)">False</li>
+                </ul>
+              </div>
+            </td>
+            <td>
+              <div style="display: flex; align-items: center;">
+                <span><strong>Keyword: </strong></span>
+                <input id="keyword" />
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <div id="search-btn-div">
+        <button type="button" class="btn btn-primary" onclick="filterByKeyword()">
+          Search
+        </button>
+      </div>
+    </div>
+    <br />
+    <span id="title-text-span"><strong>Data</strong></span>
+    <table>
+      <thead>
+        <tr>
+          <th>Job Id</th>
+          <th>Created At</th>
+          <th>Updated At</th>
+          <th>Processor name</th>
+          <th>Job name</th>
+          <th>Execute time</th>
+          <th>Data</th>
+          <th>Is executed</th>
+          <th>Is destroyed</th>
+          <th>Logs</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody id="table-body">
+        <tr>
+          <td>...</td>
+          <td>...</td>
+          <td>...</td>
+          <td>...</td>
+          <td>...</td>
+          <td>...</td>
+          <td>...</td>
+          <td>...</td>
+          <td>...</td>
+          <td>...</td>
+          <td>
+            <button>...</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
 
-  <nav aria-label="Page navigation example">
-    <ul class="pagination">
-      <li class="page-item">
-        <button class="page-link" onclick="prev()">Previous</button>
-      </li>
-      <li class="page-item">
-        <button class="page-link" onclick="next()">Next</button>
-      </li>
-    </ul>
-  </nav>
+    <nav aria-label="Page navigation example">
+      <ul class="pagination">
+        <li class="page-item">
+          <button class="page-link" onclick="prev()">Previous</button>
+        </li>
+        <li class="page-item">
+          <button class="page-link" onclick="next()">Next</button>
+        </li>
+      </ul>
+    </nav>
+  </div>
 
   <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
     integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"

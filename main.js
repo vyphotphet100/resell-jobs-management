@@ -1,5 +1,7 @@
-const baseUrl = `https://dev-api.resellticket.co.kr/api/v1`;
-// const baseUrl = `http://localhost:3000/api/v1`;
+// const baseUrl = `https://dev-api.resellticket.co.kr/api/v1`;
+// const baseUrl = `http://localhost:3000`;
+const baseUrl = this.getCookie("hostname");
+const rootPassword = this.getCookie("rootPassword");
 const urlSearchParams = new URLSearchParams(window.location.search);
 const params = Object.fromEntries(urlSearchParams.entries());
 let limit = Number(params.limit);
@@ -9,11 +11,72 @@ let isExecuted = params.isExecuted;
 let isDestroyed = params.isDestroyed;
 let keyword = params.keyword;
 let idKeyword = params.idKeyword;
+let commonHeaders = {};
 
 initState();
-getJobs();
+
+function connectToHost() {
+  // Get host info
+  let hostname = $("#hostname").val();
+  while (hostname[hostname.length - 1] === "/") {
+    hostname = hostname.slice(0, hostname.length - 1);
+  }
+  const rootPassword = $("#root-password").val();
+  if (!hostname || !rootPassword) {
+    alert("Hostname or root password not found");
+    return;
+  }
+
+  // Send request
+  const result = $.ajax({
+    url: `${hostname}/jobs/check-connect`,
+    headers: {
+      authorization: `Bearer ${rootPassword}`,
+    },
+    type: "POST",
+    async: false,
+    contentType: "application/json",
+    success: function (result) {
+      return result;
+    },
+  }).responseText;
+
+  if (!result.includes("Successfully!")) {
+    alert("Cannot connect to hostname");
+    return;
+  }
+
+  // Hide host info div
+  $("#host-info-div").css("display", "none");
+
+  // Save to cookie
+  this.setCookie("hostname", hostname, 2);
+  this.setCookie("rootPassword", rootPassword, 2);
+  window.location.reload();
+}
+
+function disconnect() {
+  this.setCookie("hostname", "", 1);
+  this.setCookie("rootPassword", "", 1);
+  window.location.reload();
+}
 
 function initState() {
+  if (!baseUrl) {
+    $("#content-div").css("display", "none");
+    return;
+  }
+
+  // Hide host info div
+  $("#host-info-div").css("display", "none");
+  $("#hostname").val(baseUrl);
+  $("#hostname-title").text(baseUrl);
+
+  // Update header
+  commonHeaders = {
+    authorization: `Bearer ${rootPassword}`,
+  };
+
   if (processorName) {
     $("#processorNameDropdown").text(processorName);
   }
@@ -33,6 +96,9 @@ function initState() {
   if (idKeyword) {
     $("#idKeyword").val(idKeyword);
   }
+
+  getQueueProcessorNames();
+  getJobs();
 }
 
 function getJobs() {
@@ -69,6 +135,7 @@ function getJobs() {
 
   const result = $.ajax({
     url: url.href,
+    headers: commonHeaders,
     type: "GET",
     async: false,
     contentType: "application/json",
@@ -77,7 +144,7 @@ function getJobs() {
     },
   }).responseJSON;
 
-  if (result.result != true) {
+  if (result.length === 0) {
     return;
   }
 
@@ -92,7 +159,7 @@ function getJobs() {
           <td>{{DATA}}</td>
           <td>{{IS_EXECUTED}}</td>
           <td>{{IS_DESTROYED}}</td>
-          <td>{{LOGS}}</td>
+          <td><pre>{{LOGS}}</pre></td>
           <td>
             <button type="button" class="btn btn-primary" onclick="executeJob('{{PROCESSOR_NAME}}', '{{JOB_ID}}')" {{IS_EXECUTE_BUTTON_SHOWN}}>Execute</button> 
             <button type="button" class="btn btn-info" onclick="reExecuteJob('{{PROCESSOR_NAME}}', '{{JOB_ID}}')" {{IS_RE-EXECUTE_BUTTON_SHOWN}}>Re-execute</button>
@@ -104,7 +171,7 @@ function getJobs() {
   `;
 
   $("#table-body").html("");
-  for (let job of result.data.data) {
+  for (let job of result.data) {
     let record = recordTemplate;
     record = replaceValueToString("JOB_ID", job.jobId, record);
     record = replaceValueToString("CREATED_AT", job.createdAt, record);
@@ -115,7 +182,7 @@ function getJobs() {
     record = replaceValueToString("DATA", JSON.stringify(job.data), record);
     record = replaceValueToString("IS_EXECUTED", job.isExecuted, record);
     record = replaceValueToString("IS_DESTROYED", job.isDestroyed, record);
-    record = replaceValueToString("LOGS", job.logs ?? "Success!", record);
+    record = replaceValueToString("LOGS", job.logs ?? "", record);
 
     if (!job.isExecuted) {
       record = replaceValueToString(
@@ -160,6 +227,56 @@ function replaceValueToString(name, value, content) {
   return content;
 }
 
+function setCookie(name, value, daysToExpire) {
+  const expirationDate = new Date();
+  expirationDate.setDate(expirationDate.getDate() + daysToExpire);
+
+  const cookieValue =
+    encodeURIComponent(value) + "; expires=" + expirationDate.toUTCString();
+  document.cookie = name + "=" + cookieValue + "; path=/";
+}
+
+function getCookie(name) {
+  const cookies = document.cookie.split("; ");
+  for (let i = 0; i < cookies.length; i++) {
+    const cookie = cookies[i].split("=");
+    if (cookie[0] === name) {
+      return decodeURIComponent(cookie[1]);
+    }
+  }
+  return null;
+}
+
+function getQueueProcessorNames() {
+  const result = $.ajax({
+    url: `${baseUrl}/jobs/get-queue-process-names`,
+    headers: commonHeaders,
+    type: "GET",
+    async: false,
+    contentType: "application/json",
+    success: function (result) {
+      return result;
+    },
+  }).responseJSON;
+
+  const template = `
+    <li onclick="filterByProcessName('{{QUEUE_PROCESSOR_NAME}}')">
+      {{QUEUE_PROCESSOR_NAME}}
+    </li>
+  `;
+
+  $("#queue-processor-name").html(`<li onclick="filterByProcessName()">All</li>`);
+  for (let queueProcessorName of result) {
+    let record = template;
+    record = replaceValueToString("QUEUE_PROCESSOR_NAME", queueProcessorName, record);
+
+    $("#queue-processor-name").html($("#queue-processor-name").html() + record);
+  }
+
+  return result;
+}
+
+
 // Pagination
 function prev() {
   if (offset === 0) {
@@ -198,6 +315,7 @@ function reExecuteJob(processorName, jobId) {
   const result = $.ajax({
     url: url,
     type: "POST",
+    headers: commonHeaders,
     async: false,
     contentType: "application/json",
     success: function (result) {
@@ -224,6 +342,7 @@ function executeJob(processorName, jobId) {
   const result = $.ajax({
     url: url,
     type: "POST",
+    headers: commonHeaders,
     async: false,
     contentType: "application/json",
     success: function (result) {
@@ -250,6 +369,7 @@ function removeJob(processorName, jobId) {
   const result = $.ajax({
     url: url,
     type: "DELETE",
+    headers: commonHeaders,
     async: false,
     contentType: "application/json",
     success: function (result) {
@@ -276,6 +396,7 @@ function destroyJob(processorName, jobId) {
   const result = $.ajax({
     url: url,
     type: "POST",
+    headers: commonHeaders,
     async: false,
     contentType: "application/json",
     success: function (result) {
@@ -302,6 +423,7 @@ function syncJobs() {
   const result = $.ajax({
     url: url,
     type: "GET",
+    headers: commonHeaders,
     async: false,
     contentType: "application/json",
     success: function (result) {
