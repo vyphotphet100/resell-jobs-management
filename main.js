@@ -380,10 +380,10 @@ function removeJob(processorName, jobId) {
     },
   }).responseJSON;
 
-  if (result.result != true) {
-    alert("Something went wrong!");
-    return;
-  }
+  // if (result.result != true) {
+  //   alert("Something went wrong!");
+  //   return;
+  // }
 
   alert("Success!");
   window.location.reload();
