@@ -319,6 +319,7 @@ function reExecuteJob(processorName, jobId) {
     async: false,
     contentType: "application/json",
     success: function (result) {
+      result["result"] = true;
       return result;
     },
   }).responseJSON;
@@ -346,6 +347,7 @@ function executeJob(processorName, jobId) {
     async: false,
     contentType: "application/json",
     success: function (result) {
+      result["result"] = true;
       return result;
     },
   }).responseJSON;
@@ -373,6 +375,7 @@ function removeJob(processorName, jobId) {
     async: false,
     contentType: "application/json",
     success: function (result) {
+      result["result"] = true;
       return result;
     },
   }).responseJSON;
@@ -400,6 +403,7 @@ function destroyJob(processorName, jobId) {
     async: false,
     contentType: "application/json",
     success: function (result) {
+      result["result"] = true;
       return result;
     },
   }).responseJSON;
@@ -427,6 +431,7 @@ function syncJobs() {
     async: false,
     contentType: "application/json",
     success: function (result) {
+      result["result"] = true;
       return result;
     },
   }).responseJSON;
